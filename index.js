@@ -1,17 +1,7 @@
+import Connection from "./mongo/Connection.js";
+
 import Dotenv from "dotenv";
 Dotenv.config();
-
-
-import Mongo from "mongodb";
-
-Mongo.MongoClient.connect(process.env.MONGODB, (err, db) => {
-    if (err) throw err;
-    let dbo = db.db("gravedigger");
-    dbo.createCollection("players", (err, res) => {
-        if (err) throw err;
-        db.close();
-    })
-});
 
 import fs from "fs";
 import Discord from "discord.js";
@@ -21,6 +11,7 @@ const client = new Discord.Client();
 let commands = {};
 
 client.on('ready', () => {
+    Connection.connectToMongo();
     let commandsPaths = fs.readdirSync("./commands/");
     for (let path of commandsPaths) {
         if (!path.endsWith(".js"))
